@@ -13,7 +13,7 @@ template MerkleTree(totalLeaves) {
 
 
     // For-Loop to create a hash for every node in the Merkle Tree
-	// The Merkle tree starts with position 0 at the root node which is why the leaves have the
+	// The Merkle Tree starts with position 0 at the root node which is why the leaves have the
 	// highest position count in the tree even though their hashes need to be computed first
     for(var i = totalNodes - 1; i >= 0; i--) {
         // Compute the hashes of the leaves
@@ -35,10 +35,10 @@ template MerkleTree(totalLeaves) {
             // Input 2 to MiMCsponge to compute the hash of the right child
             treeNodes[i].ins[1] <== treeHashes[2 * i + 1];
         }
-        // Update the merkle tree at position i with the computed hash
+        // Update the hash at position i of the Merkle Tree with the computed hash
         treeHashes[i] <== treeNodes[i].outs[0];
     }
-    // Outputs the hash of the root which is at position 0 in the Merkle tree
+    // Outputs the hash of the root which is at position 0 in the Merkle Tree
     merkleRoot <== treeHashes[0];
 }
 
