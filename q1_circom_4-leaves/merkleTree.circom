@@ -8,7 +8,7 @@ template MerkleTree(totalLeaves) {
     signal output merkleRoot;
     var totalNodes = totalLeaves * 2 - 1;
 	var firstLeavePos = totalLeaves - 1;
-    component treeNodes[totalNodes];
+    component mimc[totalNodes];
 	signal treeHashes[totalNodes];
 
 
@@ -19,28 +19,28 @@ template MerkleTree(totalLeaves) {
         // Compute the hashes of the leaves
         if(i >= firstLeavePos) {
 			// 1 input and 1 output as parameters for MiMCSponge because the leave hash gets created only from the leave data block
-            treeNodes[i] = MiMCSponge(1, 220, 1);
-            treeNodes[i].k <== 0;
+            mimc[i] = MiMCSponge(1, 220, 1);
+            mimc[i].k <== 0;
             // Input to MiMCSponge to compute the hash of the leaf - we iterate through our input leaves array
 			var j = 0;
-            treeNodes[i].ins[0] <== leaves[j];
+            mimc[i].ins[0] <== leaves[j];
 			j++;
         } else {
             // If the node is not a leaf (= branch/inner node), we compute the hash of its 2 children
 			// MiMCSponge now needs to take two inputs
-            treeNodes[i] = MiMCSponge(2, 220, 1);
-            treeNodes[i].k <== 0;
+            mimc[i] = MiMCSponge(2, 220, 1);
+            mimc[i].k <== 0;
             // Input 1 to MiMCSponge to compute the hash of the left child
-            treeNodes[i].ins[0] <== treeHashes[2 * i + 2];
+            mimc[i].ins[0] <== treeHashes[2 * i + 2];
             // Input 2 to MiMCsponge to compute the hash of the right child
-            treeNodes[i].ins[1] <== treeHashes[2 * i + 1];
+            mimc[i].ins[1] <== treeHashes[2 * i + 1];
         }
         // Update the hash at position i of the Merkle Tree with the computed hash
-        treeHashes[i] <== treeNodes[i].outs[0];
+        treeHashes[i] <== mimc[i].outs[0];
     }
     // Outputs the hash of the root which is at position 0 in the Merkle Tree
     merkleRoot <== treeHashes[0];
 }
 
 // Input signals are private by default, but can be declared public when defining the main component (output signals are always public)
-component main {public [leaves]} = MerkleTree(4); 
+component main {public [leaves]} = MerkleTree(4);

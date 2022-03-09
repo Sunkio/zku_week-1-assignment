@@ -10,7 +10,7 @@ rm -r merkleTree_*
 # --wasm compiles the circuit to wasm (= WebAssembly code to generate the witness) => merkleTree.wasm
 # -- sym outputs witness in sym format (= a symbols file required for debugging and printing the constraint
 # system in an annotated mode) => merkleTree.sym
-# --c compile the circuit to c => faster for 
+# --c compile the circuit to c => faster, recommended for bigger circuits 
 circom merkleTree.circom --r1cs --wasm --sym # --c
 
 # Check some basic info about the circuit (for safety, not mandatory)
@@ -37,16 +37,16 @@ cd ..
 
 # 3 - Proving the circuit
 # Start a new powers of tau ceremony
-snarkjs powersoftau new bn128 13 pot12_0000.ptau -v
+snarkjs powersoftau new bn128 13 pot13_0000.ptau -v
 
 # Contribute to the ceremony
-snarkjs powersoftau contribute pot12_0000.ptau pot12_0001.ptau --name="First contribution" -v
+snarkjs powersoftau contribute pot13_0000.ptau pot13_0001.ptau --name="First contribution" -v
 
 # Start generating phase 2
-snarkjs powersoftau prepare phase2 pot12_0001.ptau pot12_final.ptau -v
+snarkjs powersoftau prepare phase2 pot13_0001.ptau pot13_final.ptau -v
 
 # Generate the .zkey file that will contain the proving and verification keys together with all phase 2 contributions
-snarkjs groth16 setup merkleTree.r1cs pot12_final.ptau merkleTree_0000.zkey
+snarkjs groth16 setup merkleTree.r1cs pot13_final.ptau merkleTree_0000.zkey
 
 # Contribute to the phase 2 of the ceremony
 snarkjs zkey contribute merkleTree_0000.zkey merkleTree_0001.zkey --name="1st Contributor Name" -v
